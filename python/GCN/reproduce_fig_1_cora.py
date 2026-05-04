@@ -16,7 +16,7 @@ def load_cora():
     data = dataset[0].to(device)
     return dataset, data
 
-# Model Classes GCN_Net0 to GCN_Net3 remain the same
+# ... [Model Classes GCN_Net0 to GCN_Net3 remain the same] ...
 class GCN_Net0(torch.nn.Module):
     def __init__(self, num_features, num_classes):
         super().__init__()
@@ -70,6 +70,7 @@ def get_stratified_masks(data, label_ratio, num_classes):
     
     for c in range(num_classes):
         indices = torch.tensor(class_indices[c])
+        # Shuffle indices for this class
         perm = torch.randperm(len(indices))
         indices = indices[perm]
         
@@ -88,6 +89,7 @@ def get_stratified_masks(data, label_ratio, num_classes):
     return train_mask.to(device), test_mask.to(device)
 
 def train_and_evaluate(data, label_ratio, seed, net_type, num_classes, epochs=10000):
+    # Updated default epochs to 10000
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
@@ -115,6 +117,7 @@ def train_and_evaluate(data, label_ratio, seed, net_type, num_classes, epochs=10
         
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=1e-5)
     
+    # Optimize Target Creation
     y_target = data.y
     if is_mse:
         y_target = F.one_hot(data.y, num_classes=num_classes).float().to(device)
